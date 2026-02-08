@@ -1,11 +1,20 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
-import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen } from 'lucide-react';
+import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen, Settings } from 'lucide-react';
 
 export default function Dashboard() {
     const { user, logout } = useAuth();
-    const { tasks, loading, error, refresh } = useTasks();
+    const { tasks, loading, error, view, fetchTasks, refresh } = useTasks();
+
+    const handleLogoClick = (e) => {
+        e.preventDefault();
+        fetchTasks('all');
+    };
+
+    const handleManageClick = () => {
+        fetchTasks('mine');
+    };
 
     return (
         <div className="min-h-screen bg-slate-900 text-white font-sans">
@@ -13,19 +22,30 @@ export default function Dashboard() {
             <nav className="bg-slate-800/50 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        {/* Logo */}
-                        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        {/* Logo - Clicks to see All Stories */}
+                        <button
+                            onClick={handleLogoClick}
+                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                        >
                             <BookOpen className="w-6 h-6 text-blue-400" />
                             <span className="font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent italic">
                                 ShareStories
                             </span>
-                        </Link>
+                        </button>
 
                         {/* Top Right Actions */}
                         <div className="flex items-center gap-4">
                             {user ? (
                                 <>
-                                    <span className="text-slate-300 text-sm hidden sm:inline">
+                                    <button
+                                        onClick={handleManageClick}
+                                        className={`flex items-center gap-2 text-sm font-medium transition-colors hidden sm:flex ${view === 'mine' ? 'text-blue-400' : 'text-slate-400 hover:text-white'}`}
+                                    >
+                                        <Settings className="w-4 h-4" />
+                                        Manage your stories
+                                    </button>
+                                    <div className="h-4 w-[1px] bg-slate-700 hidden sm:block"></div>
+                                    <span className="text-slate-300 text-sm hidden md:inline">
                                         Hello, <span className="text-white font-medium">{user.firstName}</span>
                                     </span>
                                     <button
@@ -62,14 +82,22 @@ export default function Dashboard() {
             {/* Main Content */}
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-extrabold mb-4">Explore Stories</h1>
-                    <p className="text-slate-400 max-w-lg mx-auto">Discover experiences, insights, and moments shared by our community in real-time.</p>
+                    <h1 className="text-4xl font-extrabold mb-4">
+                        {view === 'mine' ? 'Your Stories' : 'Explore Stories'}
+                    </h1>
+                    <p className="text-slate-400 max-w-lg mx-auto">
+                        {view === 'mine'
+                            ? 'Manage and revisit the moments you have shared with the community.'
+                            : 'Discover experiences, insights, and moments shared by our community in real-time.'}
+                    </p>
                 </div>
 
                 {/* Story Feed Section */}
                 <div className="space-y-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-slate-200">Latest Stories</h2>
+                        <h2 className="text-xl font-bold text-slate-200">
+                            {view === 'mine' ? 'My Contributions' : 'Latest Stories'}
+                        </h2>
                         <button
                             onClick={refresh}
                             disabled={loading}
@@ -94,8 +122,12 @@ export default function Dashboard() {
 
                     {!loading && tasks.length === 0 && !error && (
                         <div className="p-20 bg-slate-800/30 border border-dashed border-slate-700 rounded-3xl text-center">
-                            <p className="text-slate-500 text-lg mb-2">The floor is empty...</p>
-                            <p className="text-slate-600 text-sm">Be the first to share a story!</p>
+                            <p className="text-slate-500 text-lg mb-2">
+                                {view === 'mine' ? 'You haven\'t shared anything yet.' : 'The floor is empty...'}
+                            </p>
+                            <p className="text-slate-600 text-sm">
+                                {view === 'mine' ? 'Ready to share your first story?' : 'Be the first to share a story!'}
+                            </p>
                         </div>
                     )}
 
@@ -107,7 +139,7 @@ export default function Dashboard() {
                                         <BookOpen className="w-6 h-6 text-blue-400" />
                                     </div>
                                     <span className="text-[11px] text-slate-500 font-medium uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700">
-                                        Story
+                                        {view === 'mine' ? 'Your Story' : 'Public Story'}
                                     </span>
                                 </div>
                                 <div>

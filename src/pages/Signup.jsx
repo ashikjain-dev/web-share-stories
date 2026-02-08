@@ -22,7 +22,7 @@ export default function Signup() {
         try {
             const res = await signup(formData.firstName, formData.lastName, formData.email, formData.password);
             if (res.success) {
-                navigate('/login');
+                navigate('/');
             } else {
                 setError(res.error?.message || 'Signup failed');
             }

@@ -51,6 +51,7 @@ export function AuthProvider({ children }) {
             // Backend uses /signup and returns { data: { insertedId: ... } }
             const res = await api.post('/signup', { firstName, lastName, email, password });
             if (res.status === 201) {
+                await checkAuth();
                 return { success: true };
             }
             return { success: false, error: { message: 'Signup failed' } };

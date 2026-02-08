@@ -8,29 +8,36 @@ export function TaskProvider({ children }) {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [view, setView] = useState('all'); // 'all' or 'mine'
     const { user } = useAuth();
 
-    const fetchPublicStories = useCallback(async () => {
+    const fetchTasks = useCallback(async (viewToFetch = view) => {
         setLoading(true);
         setError(null);
         try {
-            // Calling taskApi.get('') with baseURL ending in / resulting in https://sharestories.in/api/v1/tasks/
-            const res = await taskApi.get('');
+            const endpoint = viewToFetch === 'mine' ? '/show' : '/';
+            const res = await taskApi.get(endpoint);
             setTasks(res.data.data || []);
+            setView(viewToFetch);
         } catch (err) {
-            setError('Failed to fetch public stories');
+            setError(`Failed to fetch ${viewToFetch === 'mine' ? 'your' : 'all'} stories`);
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [view]);
 
+    // Handle default view on login/logout
     useEffect(() => {
-        fetchPublicStories();
-    }, [fetchPublicStories]);
+        if (user) {
+            fetchTasks('mine');
+        } else {
+            fetchTasks('all');
+        }
+    }, [user]);
 
     return (
-        <TaskContext.Provider value={{ tasks, loading, error, refresh: fetchPublicStories }}>
+        <TaskContext.Provider value={{ tasks, loading, error, view, setView, refresh: () => fetchTasks(view), fetchTasks }}>
             {children}
         </TaskContext.Provider>
     );
