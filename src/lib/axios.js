@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:3000/api/v1',
+    baseURL: import.meta.env.VITE_USER_SERVICE_URL || 'https://sharestories.in/api/v1/users/',
     withCredentials: true,
 });
 
 export const taskApi = axios.create({
-    baseURL: import.meta.env.VITE_TASK_SERVICE_URL || 'http://localhost:3001/api/v1',
+    baseURL: import.meta.env.VITE_TASK_SERVICE_URL || 'https://sharestories.in/api/v1/tasks/',
     withCredentials: true,
 });
 
