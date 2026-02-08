@@ -1,0 +1,33 @@
+name: Deploy Web Client to DigitalOcean
+run-name: ${{ github.actor }} is deploying to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+  
+env:
+  PROJECT_DIR: ~/apps/web-share-stories
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.DO_SSH_KEY }}
+
+      - name: Deploy to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no ashik@167.71.233.117 "
+            set -e
+            cd ${{ env.PROJECT_DIR }} && git pull origin main
+            cd ~/apps
+            docker compose up -d --build web-client
+          "
