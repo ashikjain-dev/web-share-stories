@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useTasks } from '../context/TaskContext';
-import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen, Settings } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { useTasks } from '../context/useTasks';
+import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen, PenLine, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import StoryModal from '../components/StoryModal';
 
 export default function Dashboard() {
     const { user, logout } = useAuth();
-    const { tasks, loading, error, view, fetchTasks, refresh } = useTasks();
+    const { tasks, loading, error, view, fetchTasks, refresh, deleteStory, page, hasMore, handlePageChange } = useTasks();
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const handleLogoClick = (e) => {
         e.preventDefault();
@@ -27,50 +30,49 @@ export default function Dashboard() {
                             onClick={handleLogoClick}
                             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
                         >
-                            <BookOpen className="w-6 h-6 text-blue-400" />
-                            <span className="font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent italic">
+                            <BookOpen className="w-6 h-6 text-blue-400 shrink-0" />
+                            <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent italic hidden min-[400px]:inline">
                                 ShareStories
                             </span>
                         </button>
 
                         {/* Top Right Actions */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4">
                             {user ? (
                                 <>
                                     <button
                                         onClick={handleManageClick}
-                                        className={`flex items-center gap-2 text-sm font-medium transition-colors hidden sm:flex ${view === 'mine' ? 'text-blue-400' : 'text-slate-400 hover:text-white'}`}
+                                        className={`flex items-center gap-2 text-sm font-medium transition-colors ${view === 'mine' ? 'text-blue-400' : 'text-slate-400 hover:text-white'}`}
                                     >
-                                        <Settings className="w-4 h-4" />
-                                        Manage your stories
+                                        <span>Manage<span className="hidden sm:inline"> your stories</span></span>
                                     </button>
-                                    <div className="h-4 w-[1px] bg-slate-700 hidden sm:block"></div>
-                                    <span className="text-slate-300 text-sm hidden md:inline">
+                                    <div className="h-4 w-[1px] bg-slate-700"></div>
+                                    <span className="text-slate-300 text-sm hidden lg:inline">
                                         Hello, <span className="text-white font-medium">{user.firstName}</span>
                                     </span>
                                     <button
                                         onClick={logout}
-                                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium bg-slate-700/50 px-3 py-1.5 rounded-lg border border-slate-600"
+                                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium bg-slate-700/50 px-2.5 py-1.5 sm:px-3 rounded-lg border border-slate-600"
                                     >
-                                        <LogOut className="w-4 h-4" />
-                                        Logout
+                                        <LogOut className="w-4 h-4 shrink-0" />
+                                        <span className="hidden xs:inline">Logout</span>
                                     </button>
                                 </>
                             ) : (
-                                <div className="flex gap-2">
+                                <div className="flex gap-1 sm:gap-2">
                                     <Link
                                         to="/login"
-                                        className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium px-4 py-2"
+                                        className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium px-2 py-2 sm:px-4"
                                     >
                                         <LogIn className="w-4 h-4" />
-                                        Sign In
+                                        <span className="hidden sm:inline">Sign In</span>
                                     </Link>
                                     <Link
                                         to="/signup"
-                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white transition-all text-sm font-semibold px-4 py-2 rounded-xl shadow-lg shadow-blue-500/10"
+                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white transition-all text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg shadow-blue-500/10"
                                     >
                                         <UserPlus className="w-4 h-4" />
-                                        Get Started
+                                        <span>Join<span className="hidden sm:inline"> Now</span></span>
                                     </Link>
                                 </div>
                             )}
@@ -95,8 +97,17 @@ export default function Dashboard() {
                 {/* Story Feed Section */}
                 <div className="space-y-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-slate-200">
+                        <h2 className="text-xl font-bold text-slate-200 flex items-center gap-3">
                             {view === 'mine' ? 'My Contributions' : 'Latest Stories'}
+                            {user && view === 'mine' && (
+                                <button
+                                    onClick={() => setIsCreateModalOpen(true)}
+                                    className="p-1 px-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-all flex items-center gap-2"
+                                >
+                                    <PenLine className="w-3 h-3" />
+                                    New Story
+                                </button>
+                            )}
                         </h2>
                         <button
                             onClick={refresh}
@@ -125,9 +136,13 @@ export default function Dashboard() {
                             <p className="text-slate-500 text-lg mb-2">
                                 {view === 'mine' ? 'You haven\'t shared anything yet.' : 'The floor is empty...'}
                             </p>
-                            <p className="text-slate-600 text-sm">
-                                {view === 'mine' ? 'Ready to share your first story?' : 'Be the first to share a story!'}
-                            </p>
+                            <button
+                                onClick={() => user ? setIsCreateModalOpen(true) : navigate('/login')}
+                                className="text-blue-400 hover:text-blue-300 font-medium text-sm flex items-center justify-center gap-2 mx-auto"
+                            >
+                                <Plus className="w-4 h-4" />
+                                {view === 'mine' ? 'Create your first story' : 'Be the first to share!'}
+                            </button>
                         </div>
                     )}
 
@@ -156,8 +171,50 @@ export default function Dashboard() {
                             </div>
                         ))}
                     </div>
+
+                    {/* Pagination Controls */}
+                    {!loading && tasks.length > 0 && (
+                        <div className="flex items-center justify-between pt-8 border-t border-slate-800 mt-8">
+                            <button
+                                onClick={() => handlePageChange(page - 1)}
+                                disabled={page === 1}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-700 text-sm font-medium transition-all ${page === 1
+                                        ? 'text-slate-600 border-slate-800 cursor-not-allowed'
+                                        : 'text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800'
+                                    }`}
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Previous
+                            </button>
+
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Page</span>
+                                <span className="w-8 h-8 flex items-center justify-center bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-lg font-bold text-sm">
+                                    {page}
+                                </span>
+                            </div>
+
+                            <button
+                                onClick={() => handlePageChange(page + 1)}
+                                disabled={!hasMore}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-700 text-sm font-medium transition-all ${!hasMore
+                                        ? 'text-slate-600 border-slate-800 cursor-not-allowed'
+                                        : 'text-slate-300 hover:text-white hover:border-slate-500 hover:bg-slate-800'
+                                    }`}
+                            >
+                                Next
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
                 </div>
             </main>
+
+            {/* Modal */}
+            <StoryModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
 
             {/* Footer / CTA if not logged in */}
             {!user && (
