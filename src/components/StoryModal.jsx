@@ -40,24 +40,24 @@ export default function StoryModal({ isOpen, onClose }) {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+                className="absolute inset-0 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-lg bg-slate-800 border border-slate-700 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="relative w-full max-w-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
                 {/* Header */}
-                <div className="px-6 py-6 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                <div className="px-6 py-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
                     <div>
-                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                            <Plus className="w-5 h-5 text-blue-400" />
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Plus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                             Share a New Story
                         </h2>
-                        <p className="text-slate-400 text-sm">Inspire the community with your experiences</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm">Inspire the community with your experiences</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-slate-700 rounded-full text-slate-400 hover:text-white transition-colors"
+                        className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -66,44 +66,44 @@ export default function StoryModal({ isOpen, onClose }) {
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     {error && (
-                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 dark:text-red-400 text-sm">
                             {error}
                         </div>
                     )}
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300 ml-1">Title</label>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-300 ml-1">Title</label>
                         <input
                             type="text"
                             required
                             placeholder="e.g. My first deployment to the cloud"
-                            className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300 ml-1">The Story</label>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-300 ml-1">The Story</label>
                         <textarea
                             required
                             rows={4}
                             placeholder="Tell your story here..."
-                            className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none"
+                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all resize-none font-medium"
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-2">
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-300 ml-1 flex items-center gap-2">
                             <Tag className="w-4 h-4" />
                             Tags (space separated)
                         </label>
                         <input
                             type="text"
                             placeholder="coding life success"
-                            className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                             value={formData.tags}
                             onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                         />
@@ -113,7 +113,7 @@ export default function StoryModal({ isOpen, onClose }) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-all"
+                            className="flex-1 px-6 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-white font-semibold rounded-xl transition-all"
                         >
                             Cancel
                         </button>
