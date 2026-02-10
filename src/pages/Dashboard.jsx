@@ -99,13 +99,6 @@ export default function Dashboard() {
                                         <LogIn className="w-4 h-4" />
                                         <span className="hidden sm:inline">Sign In</span>
                                     </Link>
-                                    <Link
-                                        to="/signup"
-                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white transition-all text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg shadow-blue-500/10"
-                                    >
-                                        <UserPlus className="w-4 h-4" />
-                                        <span>Join<span className="hidden sm:inline"> Now</span></span>
-                                    </Link>
                                 </div>
                             )}
                         </div>
