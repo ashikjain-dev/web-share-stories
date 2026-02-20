@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Smooth Rounded Background -->
+  <rect width="64" height="64" rx="18" fill="url(#grad)"/>
+  
+  <!-- Subtle Glow -->
+  <rect x="2" y="2" width="60" height="60" rx="16" stroke="white" stroke-opacity="0.1" stroke-width="2"/>
+
+  <!-- Elegant Open Book -->
+  <path d="M32 48C32 48 28 44 14 44V16C28 16 32 20 32 20M32 48C32 48 36 44 50 44V16C36 16 32 20 32 20M32 48V20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Detail Sparkle -->
+  <circle cx="50" cy="14" r="2" fill="white" fill-opacity="0.8"/>
+</svg>
