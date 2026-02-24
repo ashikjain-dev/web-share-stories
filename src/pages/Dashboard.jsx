@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { useTasks } from '../context/useTasks';
 import { useTheme } from '../context/useTheme';
-import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen, PenLine, Trash2, ChevronLeft, ChevronRight, Sun, Moon } from 'lucide-react';
+import { LogOut, Layout, Plus, Circle, RefreshCcw, Loader2, LogIn, UserPlus, BookOpen, PenLine, Trash2, ChevronLeft, ChevronRight, Sun, Moon, Clock } from 'lucide-react';
 import StoryModal from '../components/StoryModal';
 
 export default function Dashboard() {
@@ -197,6 +197,18 @@ export default function Dashboard() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-2xl mb-2 text-slate-800 dark:text-slate-100">{task.title}</h3>
+                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs mb-4">
+                                        <Clock className="w-3 h-3" />
+                                        <span>
+                                            {new Date(task.createdAt).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </span>
+                                    </div>
                                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">{task.description}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {task.tags?.map(tag => (

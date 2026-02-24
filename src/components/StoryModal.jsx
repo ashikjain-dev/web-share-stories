@@ -22,7 +22,7 @@ export default function StoryModal({ isOpen, onClose }) {
         const payload = {
             title: formData.title,
             description: formData.description,
-            tags: formData.tags
+            tags: formData.tags.replace(/,/g, ' ').replace(/\s+/g, ' ').trim()
         };
 
         const res = await createTask(payload);
@@ -98,11 +98,11 @@ export default function StoryModal({ isOpen, onClose }) {
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-600 dark:text-slate-300 ml-1 flex items-center gap-2">
                             <Tag className="w-4 h-4" />
-                            Tags (space separated)
+                            Tags (space or comma separated)
                         </label>
                         <input
                             type="text"
-                            placeholder="coding life success"
+                            placeholder="coding, life, success"
                             className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all font-medium"
                             value={formData.tags}
                             onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
